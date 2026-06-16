@@ -1,15 +1,14 @@
 console.log("App.js geladen")
 import { supabase } from './supabase.js'
-
 // LOGIN
-const loginForm = document.getElementById('login-form')
-
 if (loginForm) {
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault()
 
     const email = document.getElementById('login-email').value
-    const password = document.getElementById('password').value
+    const password = document.getElementById('login-password').value
+
+    console.log("Login versucht:", email)
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -17,7 +16,7 @@ if (loginForm) {
     })
 
     if (error) {
-      alert('Login fehlgeschlagen: ' + error.message)
+      alert(error.message)
     } else {
       window.location.href = '/dashboard.html'
     }
@@ -25,14 +24,14 @@ if (loginForm) {
 }
 
 // REGISTER
-const registerForm = document.getElementById('register-form')
-
 if (registerForm) {
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault()
 
-    const email = document.getElementById('email').value
-    const password = document.getElementById('password').value
+    const email = document.getElementById('register-email').value
+    const password = document.getElementById('register-password').value
+
+    console.log("Registrierung:", email)
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -40,9 +39,9 @@ if (registerForm) {
     })
 
     if (error) {
-      alert('Registrierung fehlgeschlagen: ' + error.message)
+      alert(error.message)
     } else {
-      alert('Registrierung erfolgreich! Bitte einloggen.')
+      alert("Erfolgreich registriert")
     }
   })
 }
