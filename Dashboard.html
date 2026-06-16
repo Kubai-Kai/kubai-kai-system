@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <h1>Dashboard</h1>
+
+  <div id="members"></div>
+
+  <script type="module">
+    import { supabase } from "./js/supabase.js";
+
+    async function loadMembers() {
+      const { data } = await supabase.from("members").select("*");
+
+      document.getElementById("members").innerHTML =
+        data.map(m => `<p>${m.first_name} ${m.last_name}</p>`).join("");
+    }
+
+    loadMembers();
+  </script>
+
+</body>
+</html>

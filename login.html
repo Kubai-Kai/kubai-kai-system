@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <h1>Kubai-Kai System Login</h1>
+
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Passwort">
+
+  <button onclick="login()">Login</button>
+
+  <script type="module">
+    import { supabase } from "./js/supabase.js";
+
+    window.login = async function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      window.location.href = "dashboard.html";
+    }
+  </script>
+
+</body>
+</html>
