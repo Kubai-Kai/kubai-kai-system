@@ -3,7 +3,7 @@ import { supabase } from './supabase.js'
 console.log("App.js geladen")
 
 /* ---------------------------
-   DOM ELEMENTE
+   ELEMENTE HOLEN
 ---------------------------- */
 
 const loginForm = document.getElementById('login-form')
@@ -21,7 +21,7 @@ if (loginForm) {
     const passwordEl = document.getElementById('login-password')
 
     if (!emailEl || !passwordEl) {
-      alert("Login-Felder fehlen im HTML")
+      alert("Login Felder fehlen im HTML")
       return
     }
 
@@ -35,10 +35,9 @@ if (loginForm) {
       password
     })
 
-if (error) {
-  console.log("FULL ERROR:", error)
-  alert(error.message)
-}
+    if (error) {
+      console.log("LOGIN ERROR:", error)
+      alert("Login Fehler: " + error.message)
     } else {
       window.location.href = '/dashboard.html'
     }
@@ -57,7 +56,7 @@ if (registerForm) {
     const passwordEl = document.getElementById('register-password')
 
     if (!emailEl || !passwordEl) {
-      alert("Register-Felder fehlen im HTML")
+      alert("Register Felder fehlen im HTML")
       return
     }
 
@@ -71,12 +70,11 @@ if (registerForm) {
       password
     })
 
-if (error) {
-  console.log("FULL ERROR:", error)
-  alert(error.message)
-}
+    if (error) {
+      console.log("REGISTER ERROR:", error)
+      alert("Registrierung Fehler: " + error.message)
     } else {
-      alert("Registrierung erfolgreich – bitte einloggen")
+      alert("Registrierung erfolgreich! Bitte einloggen.")
     }
   })
 }
@@ -86,8 +84,13 @@ if (error) {
 ---------------------------- */
 
 async function checkSession() {
-  const { data } = await supabase.auth.getSession()
-  console.log("Session:", data.session)
+  const { data, error } = await supabase.auth.getSession()
+
+  if (error) {
+    console.log("SESSION ERROR:", error)
+  } else {
+    console.log("Session:", data.session)
+  }
 }
 
 checkSession()
