@@ -35,8 +35,10 @@ if (loginForm) {
       password
     })
 
-    if (error) {
-      alert("Login Fehler: " + error.message)
+if (error) {
+  console.log("FULL ERROR:", error)
+  alert(error.message)
+}
     } else {
       window.location.href = '/dashboard.html'
     }
@@ -69,8 +71,10 @@ if (registerForm) {
       password
     })
 
-    if (error) {
-      alert("Register Fehler: " + error.message)
+if (error) {
+  console.log("FULL ERROR:", error)
+  alert(error.message)
+}
     } else {
       alert("Registrierung erfolgreich – bitte einloggen")
     }
