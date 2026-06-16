@@ -1,14 +1,34 @@
-console.log("App.js geladen")
 import { supabase } from './supabase.js'
-// LOGIN
+
+console.log("App.js geladen")
+
+/* ---------------------------
+   DOM ELEMENTE
+---------------------------- */
+
+const loginForm = document.getElementById('login-form')
+const registerForm = document.getElementById('register-form')
+
+/* ---------------------------
+   LOGIN
+---------------------------- */
+
 if (loginForm) {
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault()
 
-    const email = document.getElementById('login-email').value
-    const password = document.getElementById('login-password').value
+    const emailEl = document.getElementById('login-email')
+    const passwordEl = document.getElementById('login-password')
 
-    console.log("Login versucht:", email)
+    if (!emailEl || !passwordEl) {
+      alert("Login-Felder fehlen im HTML")
+      return
+    }
+
+    const email = emailEl.value
+    const password = passwordEl.value
+
+    console.log("Login Versuch:", email)
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -16,20 +36,31 @@ if (loginForm) {
     })
 
     if (error) {
-      alert(error.message)
+      alert("Login Fehler: " + error.message)
     } else {
       window.location.href = '/dashboard.html'
     }
   })
 }
 
-// REGISTER
+/* ---------------------------
+   REGISTRIERUNG
+---------------------------- */
+
 if (registerForm) {
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault()
 
-    const email = document.getElementById('register-email').value
-    const password = document.getElementById('register-password').value
+    const emailEl = document.getElementById('register-email')
+    const passwordEl = document.getElementById('register-password')
+
+    if (!emailEl || !passwordEl) {
+      alert("Register-Felder fehlen im HTML")
+      return
+    }
+
+    const email = emailEl.value
+    const password = passwordEl.value
 
     console.log("Registrierung:", email)
 
@@ -39,9 +70,20 @@ if (registerForm) {
     })
 
     if (error) {
-      alert(error.message)
+      alert("Register Fehler: " + error.message)
     } else {
-      alert("Erfolgreich registriert")
+      alert("Registrierung erfolgreich – bitte einloggen")
     }
   })
 }
+
+/* ---------------------------
+   SESSION CHECK (optional)
+---------------------------- */
+
+async function checkSession() {
+  const { data } = await supabase.auth.getSession()
+  console.log("Session:", data.session)
+}
+
+checkSession()
