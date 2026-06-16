@@ -1,3 +1,4 @@
+console.log("App.js geladen")
 import { supabase } from './supabase.js'
 
 // LOGIN
@@ -7,7 +8,7 @@ if (loginForm) {
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault()
 
-    const email = document.getElementById('email').value
+    const email = document.getElementById('login-email').value
     const password = document.getElementById('password').value
 
     const { error } = await supabase.auth.signInWithPassword({
