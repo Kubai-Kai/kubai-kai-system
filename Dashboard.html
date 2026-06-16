@@ -1,27 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css">
-</head>
-<body>
+<script type="module">
+import { supabase } from './js/supabase.js'
 
-  <h1>Dashboard</h1>
+const { data: { session } } = await supabase.auth.getSession()
 
-  <div id="members"></div>
+if (!session) {
+  window.location.href = '/login.html'
+}
+</script>
 
-  <script type="module">
-    import { supabase } from "./js/supabase.js";
+<h1>Dashboard</h1>
+<button id="logout">Logout</button>
 
-    async function loadMembers() {
-      const { data } = await supabase.from("members").select("*");
+<script type="module">
+import { supabase } from './js/supabase.js'
 
-      document.getElementById("members").innerHTML =
-        data.map(m => `<p>${m.first_name} ${m.last_name}</p>`).join("");
-    }
-
-    loadMembers();
-  </script>
-
-</body>
-</html>
+document.getElementById('logout').addEventListener('click', async () => {
+  await supabase.auth.signOut()
+  window.location.href = '/login.html'
+})
+</script>
