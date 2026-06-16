@@ -1,20 +1,61 @@
-<h2>Login</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
 
-<form id="login-form">
-  <input id="login-email" type="email" required />
-  <input id="login-password" type="password" required />
-  <button type="submit">Login</button>
-</form>
+<body>
 
-<h2>Registrieren</h2>
+<h1>Kubai-Kai System</h1>
 
-<form id="register-form">
-  <input id="register-email" type="email" required />
-  <input id="register-password" type="password" required />
-  <button type="submit">Registrieren</button>
-</form>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Passwort">
 
-<script type="module" src="/js/app.js"></script>
+<button id="loginBtn">Login</button>
+<button id="registerBtn">Registrieren</button>
+
+<script type="module">
+import { supabase } from "./js/supabase.js";
+
+// LOGIN
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  window.location.href = "dashboard.html";
+});
+
+// REGISTRIERUNG
+document.getElementById("registerBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Registrierung erfolgreich! Jetzt einloggen.");
+});
+
+</script>
 
 </body>
 </html>
