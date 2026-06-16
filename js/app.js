@@ -1,96 +1,52 @@
-import { supabase } from './supabase.js'
+import { supabase } from "./js/supabase.js";
 
-console.log("App.js geladen")
+document.getElementById("loginBtn").addEventListener("click", async () => {
 
-/* ---------------------------
-   ELEMENTE HOLEN
----------------------------- */
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-const loginForm = document.getElementById('login-form')
-const registerForm = document.getElementById('register-form')
-
-/* ---------------------------
-   LOGIN
----------------------------- */
-
-if (loginForm) {
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault()
-
-    const emailEl = document.getElementById('login-email')
-    const passwordEl = document.getElementById('login-password')
-
-    if (!emailEl || !passwordEl) {
-      alert("Login Felder fehlen im HTML")
-      return
-    }
-
-    const email = emailEl.value
-    const password = passwordEl.value
-
-    console.log("Login Versuch:", email)
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-
-    if (error) {
-      console.log("LOGIN ERROR:", error)
-      alert("Login Fehler: " + error.message)
-    } else {
-      window.location.href = '/dashboard.html'
-    }
-  })
-}
-
-/* ---------------------------
-   REGISTRIERUNG
----------------------------- */
-
-if (registerForm) {
-  registerForm.addEventListener('submit', async (e) => {
-    e.preventDefault()
-
-    const emailEl = document.getElementById('register-email')
-    const passwordEl = document.getElementById('register-password')
-
-    if (!emailEl || !passwordEl) {
-      alert("Register Felder fehlen im HTML")
-      return
-    }
-
-    const email = emailEl.value
-    const password = passwordEl.value
-
-    console.log("Registrierung:", email)
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password
-    })
-
-    if (error) {
-      console.log("REGISTER ERROR:", error)
-      alert("Registrierung Fehler: " + error.message)
-    } else {
-      alert("Registrierung erfolgreich! Bitte einloggen.")
-    }
-  })
-}
-
-/* ---------------------------
-   SESSION CHECK (optional)
----------------------------- */
-
-async function checkSession() {
-  const { data, error } = await supabase.auth.getSession()
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
 
   if (error) {
-    console.log("SESSION ERROR:", error)
-  } else {
-    console.log("Session:", data.session)
+    alert(error.message);
+    return;
   }
-}
 
-checkSession()
+  const user = data.user;
+
+  // 🔥 WICHTIG: Profil sicher laden
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !profile) {
+    alert("Profil nicht gefunden");
+    return;
+  }
+
+  // 🔀 Routing
+  if (profile.role === "admin") {
+    window.location.href = "dashboard.html";
+  }
+
+  else if (profile.role === "trainer") {
+    window.location.href = "dashboard.html";
+  }
+
+  else if (profile.role === "parent") {
+    window.location.href = "parent.html";
+  }
+
+  else if (profile.role === "child") {
+    window.location.href = "child.html";
+  }
+
+  else {
+    window.location.href = "dashboard.html";
+  }
+});
