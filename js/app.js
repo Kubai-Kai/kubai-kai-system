@@ -1,52 +1,32 @@
-import { supabase } from "./js/supabase.js";
+import { supabase } from "./supabase.js";
 
-document.getElementById("loginBtn").addEventListener("click", async () => {
+/**
+ * 🔐 Prüft ob User eingeloggt ist
+ * Wenn nicht → zurück zum Login
+ */
+export async function requireAuth() {
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (error) {
-    alert(error.message);
-    return;
+  if (!user) {
+    window.location.href = "login.html";
+    return null;
   }
 
-  const user = data.user;
+  return user;
+}
 
-  // 🔥 WICHTIG: Profil sicher laden
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+/**
+ * 👤 Aktuellen User holen
+ */
+export async function getUser() {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+}
 
-  if (profileError || !profile) {
-    alert("Profil nicht gefunden");
-    return;
-  }
-
-  // 🔀 Routing
-  if (profile.role === "admin") {
-    window.location.href = "dashboard.html";
-  }
-
-  else if (profile.role === "trainer") {
-    window.location.href = "dashboard.html";
-  }
-
-  else if (profile.role === "parent") {
-    window.location.href = "parent.html";
-  }
-
-  else if (profile.role === "child") {
-    window.location.href = "child.html";
-  }
-
-  else {
-    window.location.href = "dashboard.html";
-  }
-});
+/**
+ * 🚪 Logout
+ */
+export async function logout() {
+  await supabase.auth.signOut();
+  window.location.href = "login.html";
+}
