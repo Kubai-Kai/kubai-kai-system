@@ -1,48 +1,20 @@
-<h1>Kubai-Kai System Login</h1>
+<h2>Login</h2>
 
-<input id="email">
-<input id="password" type="password">
-<button onclick="login()">Login</button>
-<script type="module">
-import { supabase } from "./js/supabase.js";
+<form id="login-form">
+  <input id="email" type="email" placeholder="Email" required />
+  <input id="password" type="password" placeholder="Passwort" required />
+  <button type="submit">Login</button>
+</form>
 
-window.login = async function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+<h2>Registrieren</h2>
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+<form id="register-form">
+  <input id="email" type="email" placeholder="Email" required />
+  <input id="password" type="password" placeholder="Passwort" required />
+  <button type="submit">Registrieren</button>
+</form>
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+<script type="module" src="/js/app.js"></script>
 
-  // USER ID holen
-  const user = data.user;
-
-  // Rolle aus DB holen
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile) {
-    alert("Kein Profil gefunden");
-    return;
-  }
-
-  // Weiterleitung nach Rolle
-  if (profile.role === "admin") {
-    window.location.href = "dashboard.html";
-  } 
-  else if (profile.role === "trainer") {
-    window.location.href = "dashboard.html";
-  } 
-  else {
-    window.location.href = "dashboard.html";
-  }
-};
+</body>
+</html>
