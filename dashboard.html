@@ -1,37 +1,39 @@
-<script type="module">
-import { supabase } from './js/supabase.js'
-
-const { data: { session } } = await supabase.auth.getSession()
-
-if (!session) {
-  window.location.href = '/login.html'
-}
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
 
 <h1>Dashboard</h1>
-<button id="logout">Logout</button>
+
+<a id="adminLink" href="admin.html" style="display:none;">🔧 Admin-Bereich</a>
+<button id="logoutBtn">Logout</button>
 
 <script type="module">
-import { supabase } from './js/supabase.js'
+  import { supabase } from './js/supabase.js';
+  import { getUserRole } from './js/app.js';
 
-document.getElementById('logout').addEventListener('click', async () => {
-  await supabase.auth.signOut()
-  window.location.href = '/login.html'
-})
-</script>
-<script type="module">
-  import { requireAuth, getUserRole, logout } from "./js/app.js";
+  // Session prüfen
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    window.location.href = '/login.html';
+  }
 
-  await requireAuth();
+  // Admin-Link anzeigen wenn Admin
   const role = await getUserRole();
-
   if (role === 'admin') {
     document.getElementById("adminLink").style.display = "block";
   }
 
-  document.getElementById("logoutBtn").addEventListener("click", logout);
+  // Logout
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login.html';
+  });
 </script>
 
-<!-- Im Body: -->
-<a id="adminLink" href="admin.html" style="display:none;">🔧 Admin-Bereich</a>
-<button id="logoutBtn">Logout</button>
+</body>
+</html>
