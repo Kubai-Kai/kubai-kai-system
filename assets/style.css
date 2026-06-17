@@ -135,3 +135,22 @@ body {
   border-color: var(--accent);
   box-shadow: 0 0 10px var(--accent-glow);
 }
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.logo img {
+  width: 140px;          /* Größe anpassen */
+  height: auto;
+  filter: drop-shadow(0 0 8px rgba(230, 57, 70, 0.4)); /* Samurai-Glow */
+  border-radius: 12px;   /* leichte Rundung */
+  transition: 0.25s ease;
+}
+
+.logo img:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 14px rgba(230, 57, 70, 0.7));
+}
