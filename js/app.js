@@ -26,10 +26,26 @@ export async function getUser() {
 /**
  * 🚪 Logout
  */
-export async function logout() {
+/**
+ * Logout
+ */
+document.getElementById("logoutBtn").addEventListener("click", async () => {
   await supabase.auth.signOut();
-  window.location.href = "login.html";
+  window.location.href = "/login.html";
+});
+
+/**
+ * Mitglieder zählen (UI Beispiel)
+ */
+async function loadStats() {
+  const members = await getMembers();
+
+  const countEl = document.getElementById("memberCount");
+  countEl.textContent = members.length;
 }
+
+loadStats();
+
 /**
  * 👤 Rolle des aktuellen Users holen
  */
