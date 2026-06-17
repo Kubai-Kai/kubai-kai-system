@@ -1,98 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <title>Kubai-Kai System</title>
+  <link rel="stylesheet" href="/assets/style.css">
 </head>
+
 <body>
 
-<h1>Dashboard</h1>
+<div class="app">
 
-<a id="adminLink" href="admin.html" style="display:none;">🔧 Admin-Bereich</a>
-<button id="logoutBtn">Logout</button>
-  
-<h2>Mitglieder</h2>
-<div id="membersList">Lade...</div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
 
-  <h2>Neues Mitglied</h2>
+    <div class="logo">
+      🥋 Kubai-Kai System
+    </div>
 
-<div id="memberForm" style="display:none;">
-  <input id="firstName" placeholder="Vorname">
-  <input id="lastName" placeholder="Nachname">
-  <input id="emailMember" placeholder="Email">
-  <button id="saveMember">Speichern</button>
+    <nav class="nav">
+      <a href="#">Dashboard</a>
+      <a href="#members">Mitglieder</a>
+      <a href="#training">Training</a>
+      <a href="#exams">Prüfungen</a>
+      <a href="#finance">Finanzen</a>
+      <a href="/profile.html">Mein Profil</a>
+    </nav>
+
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div>Dashboard</div>
+      <button class="logout" id="logoutBtn">Logout</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ================= DASHBOARD CARDS ================= -->
+      <h2>Übersicht</h2>
+
+      <div class="grid">
+
+        <div class="card">
+          <h3>Mitglieder</h3>
+          <p id="memberCount">-</p>
+        </div>
+
+        <div class="card">
+          <h3>Trainings</h3>
+          <p id="trainingCount">-</p>
+        </div>
+
+        <div class="card">
+          <h3>Prüfungen</h3>
+          <p id="examCount">-</p>
+        </div>
+
+        <div class="card">
+          <h3>Kasse</h3>
+          <p id="financeSum">-</p>
+        </div>
+
+      </div>
+
+      <hr style="margin:20px 0; border-color:#1f2a44;">
+
+      <!-- ================= MITGLIEDER (WICHTIG: EXISTIERT WEITER) ================= -->
+      <section id="members">
+
+        <h2>Mitglieder</h2>
+
+        <!-- WICHTIG: BLEIBT FÜR DEIN JS -->
+        <div id="membersList">Lade...</div>
+
+        <!-- WICHTIG: FORM BLEIBT UNVERÄNDERT -->
+        <h3>Neues Mitglied</h3>
+
+        <div id="memberForm" style="display:none;">
+          <input id="firstName" placeholder="Vorname">
+          <input id="lastName" placeholder="Nachname">
+          <input id="emailMember" placeholder="Email">
+          <button id="saveMember">Speichern</button>
+        </div>
+
+      </section>
+
+      <!-- ================= TRAINING (PLATZHALTER) ================= -->
+      <section id="training">
+        <h2>Training</h2>
+        <div class="card">Hier kommt später Training</div>
+      </section>
+
+      <!-- ================= PRÜFUNGEN ================= -->
+      <section id="exams">
+        <h2>Prüfungen</h2>
+        <div class="card">Hier kommt später Prüfungslogik</div>
+      </section>
+
+      <!-- ================= FINANZEN ================= -->
+      <section id="finance">
+        <h2>Finanzen</h2>
+        <div class="card">Hier kommt später Kassenbuch</div>
+      </section>
+
+    </div>
+
+  </div>
+
 </div>
-  
-<script type="module">
-  import { supabase } from './js/supabase.js';
-  import { getUserRole } from './js/app.js';
 
-  // Session prüfen
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    window.location.href = '/login.html';
-  }
-
-  // Admin-Link anzeigen wenn Admin
-  const role = await getUserRole();
-  if (role === 'admin') {
-    document.getElementById("adminLink").style.display = "block";
-  }
-
-  // Logout
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/login.html';
-  });
-
-  import { getMembers } from "./js/members.js";
-
-const members = await getMembers();
-
-const container = document.getElementById("membersList");
-container.innerHTML = "";
-
-members.forEach(m => {
-  const div = document.createElement("div");
-  div.textContent = `${m.first_name} ${m.last_name}`;
-  container.appendChild(div);
-});
-  import { createMember } from "./js/members.js";
-
-// Formular nur für Admin/Trainer anzeigen
-if (role === 'admin' || role === 'trainer') {
-  document.getElementById("memberForm").style.display = "block";
-}
-  document.getElementById("saveMember").addEventListener("click", async () => {
-  const member = {
-    first_name: document.getElementById("firstName").value,
-    last_name: document.getElementById("lastName").value,
-    email: document.getElementById("emailMember").value
-  };
-
-  const ok = await createMember(member);
-
-  if (ok) {
-    alert("Gespeichert!");
-    location.reload(); // wichtig fürs UI
-  } else {
-    alert("Fehler beim Speichern");
-  }
-});
-  import { getMyMember } from "./js/members.js";
-
-const myMember = await getMyMember();
-
-if (myMember) {
-  const div = document.createElement("div");
-  div.innerHTML = `
-    <h3>Mein Profil</h3>
-    ${myMember.first_name} ${myMember.last_name}
-  `;
-  document.body.appendChild(div);
-}
-</script>
+<script type="module" src="/js/app.js"></script>
 
 </body>
 </html>
