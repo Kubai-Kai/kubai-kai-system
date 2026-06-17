@@ -14,6 +14,15 @@
   
 <h2>Mitglieder</h2>
 <div id="membersList">Lade...</div>
+
+  <h2>Neues Mitglied</h2>
+
+<div id="memberForm" style="display:none;">
+  <input id="firstName" placeholder="Vorname">
+  <input id="lastName" placeholder="Nachname">
+  <input id="emailMember" placeholder="Email">
+  <button id="saveMember">Speichern</button>
+</div>
   
 <script type="module">
   import { supabase } from './js/supabase.js';
@@ -49,9 +58,30 @@ members.forEach(m => {
   div.textContent = `${m.first_name} ${m.last_name}`;
   container.appendChild(div);
 });
+  import { createMember } from "./js/members.js";
+
+// Formular nur für Admin/Trainer anzeigen
+if (role === 'admin' || role === 'trainer') {
+  document.getElementById("memberForm").style.display = "block";
+}
+  document.getElementById("saveMember").addEventListener("click", async () => {
+  const member = {
+    first_name: document.getElementById("firstName").value,
+    last_name: document.getElementById("lastName").value,
+    email: document.getElementById("emailMember").value
+  };
+
+  const ok = await createMember(member);
+
+  if (ok) {
+    alert("Gespeichert!");
+    location.reload(); // wichtig fürs UI
+  } else {
+    alert("Fehler beim Speichern");
+  }
+});
   
 </script>
-  
 
 </body>
 </html>
