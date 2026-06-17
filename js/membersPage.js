@@ -1,108 +1,109 @@
 import { supabase } from "./supabase.js";
-import { getMembers, createMember } from "./members.js";
+import { getMembers, createMember, updateMember } from "./members.js";
+
+let currentMember = null;
 
 /**
- * Logout
- */
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-  await supabase.auth.signOut();
-  window.location.href = "/login.html";
-});
-
-/**
- * Mitglieder laden
+ * TABLE LOAD
  */
 async function loadMembers() {
   const members = await getMembers();
-
-  const container = document.getElementById("membersList");
-  container.innerHTML = "";
+  const table = document.getElementById("membersTable");
+  table.innerHTML = "";
 
   members.forEach(m => {
-    const card = document.createElement("div");
-    card.className = "card";
+    const row = document.createElement("tr");
 
-    card.innerHTML = `
-      <h3>${m.first_name} ${m.last_name}</h3>
-      <p>${m.email || "-"}</p>
-      <p>Status: ${m.status}</p>
+    row.innerHTML = `
+      <td>${m.first_name} ${m.last_name}</td>
+      <td>${m.email || "-"}</td>
+      <td>${m.status}</td>
     `;
 
-    container.appendChild(card);
-  });
+    row.addEventListener("click", () => openModal(m));
 
-  return members;
+    table.appendChild(row);
+  });
 }
 
 /**
- * Suche (einfach)
+ * MODAL OPEN
  */
-document.getElementById("searchInput").addEventListener("input", async (e) => {
-  const term = e.target.value.toLowerCase();
+function openModal(member) {
+  currentMember = member;
 
-  const members = await getMembers();
+  document.getElementById("editFirstName").value = member.first_name;
+  document.getElementById("editLastName").value = member.last_name;
+  document.getElementById("editEmail").value = member.email || "";
+  document.getElementById("editStatus").value = member.status;
 
-  const filtered = members.filter(m =>
-    (m.first_name + " " + m.last_name).toLowerCase().includes(term)
-  );
-
-  const container = document.getElementById("membersList");
-  container.innerHTML = "";
-
-  filtered.forEach(m => {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    card.innerHTML = `
-      <h3>${m.first_name} ${m.last_name}</h3>
-      <p>${m.email || "-"}</p>
-    `;
-
-    container.appendChild(card);
-  });
-});
-
-/**
- * Rollen prüfen → Formular anzeigen
- */
-async function checkRole() {
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const { data } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (data.role === "admin" || data.role === "trainer") {
-    document.getElementById("memberForm").style.display = "block";
-  }
+  document.getElementById("detailModal").style.display = "flex";
 }
 
 /**
- * Neues Mitglied speichern
+ * MODAL CLOSE
  */
-document.getElementById("saveMember").addEventListener("click", async () => {
+document.getElementById("closeModal").onclick = () => {
+  document.getElementById("detailModal").style.display = "none";
+};
 
-  const member = {
-    first_name: document.getElementById("firstName").value,
-    last_name: document.getElementById("lastName").value,
-    email: document.getElementById("emailMember").value
-  };
+/**
+ * SAVE EDIT (OHNE RELOAD)
+ */
+document.getElementById("saveEdit").onclick = async () => {
 
-  const ok = await createMember(member);
+  const ok = await updateMember(currentMember.id, {
+    first_name: document.getElementById("editFirstName").value,
+    last_name: document.getElementById("editLastName").value,
+    email: document.getElementById("editEmail").value,
+    status: document.getElementById("editStatus").value
+  });
 
   if (ok) {
-    alert("Gespeichert");
-    location.reload();
+    document.getElementById("detailModal").style.display = "none";
+    await loadMembers();
   } else {
     alert("Fehler");
   }
+};
 
-});
+/**
+ * CREATE MODAL
+ */
+document.getElementById("openCreateModal").onclick = () => {
+  document.getElementById("createModal").style.display = "flex";
+};
+
+document.getElementById("closeCreateModal").onclick = () => {
+  document.getElementById("createModal").style.display = "none";
+};
+
+/**
+ * CREATE MEMBER
+ */
+document.getElementById("createMemberBtn").onclick = async () => {
+
+  const ok = await createMember({
+    first_name: document.getElementById("newFirstName").value,
+    last_name: document.getElementById("newLastName").value,
+    email: document.getElementById("newEmail").value
+  });
+
+  if (ok) {
+    document.getElementById("createModal").style.display = "none";
+    await loadMembers();
+  }
+};
+
+/**
+ * LOGOUT
+ */
+document.getElementById("logoutBtn").onclick = async () => {
+  await supabase.auth.signOut();
+  window.location.href = "/login.html";
+};
 
 /**
  * INIT
  */
-await loadMembers();
-await checkRole();
+loadMembers();
