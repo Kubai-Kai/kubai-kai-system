@@ -80,7 +80,18 @@ if (role === 'admin' || role === 'trainer') {
     alert("Fehler beim Speichern");
   }
 });
-  
+  import { getMyMember } from "./js/members.js";
+
+const myMember = await getMyMember();
+
+if (myMember) {
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <h3>Mein Profil</h3>
+    ${myMember.first_name} ${myMember.last_name}
+  `;
+  document.body.appendChild(div);
+}
 </script>
 
 </body>
