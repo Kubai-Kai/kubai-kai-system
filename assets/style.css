@@ -1,19 +1,23 @@
 :root {
-  --bg: #0f172a;
-  --panel: #111c33;
-  --panel2: #16213e;
-  --text: #e5e7eb;
-  --muted: #94a3b8;
-  --accent: #38bdf8;
-  --danger: #ef4444;
-  --radius: 14px;
+  --bg: #0b0f14;
+  --panel: #111418;
+  --panel2: #161b20;
+  --text: #f1e9d2;
+  --muted: #b8b2a3;
+  --accent: #e63946; /* Samurai-Rot */
+  --accent-glow: rgba(230, 57, 70, 0.6);
+  --danger: #b00020;
+  --radius: 18px;
+  --radius-hard: 6px; /* Samurai-Kante */
+  --transition: 0.25s ease;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
+  letter-spacing: 0.3px;
 }
 
 body {
@@ -35,27 +39,35 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  border-right: 1px solid #1c1f24;
 }
 
 .logo {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
   color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
+/* NAVIGATION */
 .nav a {
   display: block;
   color: var(--text);
   text-decoration: none;
-  padding: 10px;
-  border-radius: var(--radius);
-  margin-bottom: 8px;
+  padding: 12px;
+  border-radius: var(--radius-hard);
+  margin-bottom: 10px;
   background: var(--panel2);
+  transition: var(--transition);
+  border: 1px solid transparent;
 }
 
 .nav a:hover {
   background: var(--accent);
-  color: black;
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
 }
 
 /* MAIN */
@@ -73,16 +85,29 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  border-bottom: 1px solid #1f2a44;
+  border-bottom: 1px solid #1c1f24;
 }
 
-.logout {
-  background: var(--danger);
+/* SAMURAI BUTTON */
+.logout,
+.btn {
+  background: var(--accent);
   border: none;
-  padding: 8px 12px;
+  padding: 10px 16px;
   color: white;
-  border-radius: var(--radius);
+  border-radius: var(--radius-hard);
   cursor: pointer;
+  transition: var(--transition);
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: 1px solid var(--accent);
+}
+
+.logout:hover,
+.btn:hover {
+  background: #ff4d5a;
+  box-shadow: 0 0 14px var(--accent-glow);
+  transform: translateY(-2px);
 }
 
 /* CONTENT */
@@ -99,7 +124,14 @@ body {
 }
 
 .card {
-  background: var(--panel);
-  padding: 15px;
+  background: var(--panel2);
+  padding: 18px;
   border-radius: var(--radius);
+  border: 1px solid #1c1f24;
+  transition: var(--transition);
+}
+
+.card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
 }
