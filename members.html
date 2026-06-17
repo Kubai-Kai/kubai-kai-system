@@ -56,28 +56,77 @@
 
 </div>
 
-<!-- MODAL DETAIL -->
 <div class="modal" id="detailModal">
-  <div class="modal-content">
+  <div class="modal-content large">
 
-    <h3>Mitglied bearbeiten</h3>
+    <!-- HEADER -->
+    <div style="display:flex; justify-content:space-between;">
+      <h2 id="profileName">Mitglied</h2>
+      <button id="closeModal">X</button>
+    </div>
 
-    <input id="editFirstName">
-    <input id="editLastName">
-    <input id="editEmail">
+    <!-- VIEW MODE -->
+    <div id="viewMode">
 
-    <select id="editStatus">
-      <option value="active">Aktiv</option>
-      <option value="inactive">Inaktiv</option>
-      <option value="trial">Probe</option>
-    </select>
+      <div class="profile-grid">
 
-    <button class="btn" id="saveEdit">Speichern</button>
-    <button class="btn" id="closeModal">Schließen</button>
+        <div>
+          <p><b>Email:</b></p>
+          <p id="viewEmail"></p>
+        </div>
+
+        <div>
+          <p><b>Status:</b></p>
+          <p id="viewStatus"></p>
+        </div>
+
+        <div>
+          <p><b>Telefon:</b></p>
+          <p id="viewPhone"></p>
+        </div>
+
+        <div>
+          <p><b>Adresse:</b></p>
+          <p id="viewAddress"></p>
+        </div>
+
+        <div>
+          <p><b>Dabei seit:</b></p>
+          <p id="viewCreated"></p>
+        </div>
+
+      </div>
+
+      <button class="btn" id="editBtn">Bearbeiten</button>
+
+    </div>
+
+    <!-- EDIT MODE -->
+    <div id="editMode" style="display:none;">
+
+      <input id="editFirstName">
+      <input id="editLastName">
+      <input id="editEmail">
+      <input id="editPhone" placeholder="Telefon">
+
+      <input id="editStreet" placeholder="Straße">
+      <input id="editCity" placeholder="Stadt">
+      <input id="editZip" placeholder="PLZ">
+
+      <select id="editStatus">
+        <option value="active">Aktiv</option>
+        <option value="inactive">Inaktiv</option>
+        <option value="trial">Probe</option>
+      </select>
+
+      <button class="btn" id="saveEdit">Speichern</button>
+      <button class="btn" id="cancelEdit">Abbrechen</button>
+
+    </div>
 
   </div>
 </div>
-
+  
 <!-- MODAL CREATE -->
 <div class="modal" id="createModal">
   <div class="modal-content">
