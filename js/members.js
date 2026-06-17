@@ -13,3 +13,15 @@ export async function getMembers() {
 
   return data;
 }
+export async function createMember(member) {
+  const { error } = await supabase
+    .from("members")
+    .insert([member]);
+
+  if (error) {
+    console.error(error);
+    return false;
+  }
+
+  return true;
+}
