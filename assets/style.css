@@ -154,3 +154,18 @@ body {
   transform: scale(1.05);
   filter: drop-shadow(0 0 14px rgba(230, 57, 70, 0.7));
 }
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-hard);
+  border: 1px solid #1c1f24;
+  background: var(--panel);
+  color: var(--text);
+  transition: var(--transition);
+}
+
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  outline: none;
+}
