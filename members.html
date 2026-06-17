@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Mitglieder - Kubai-Kai System</title>
+  <title>Mitglieder</title>
   <link rel="stylesheet" href="/assets/style.css">
 </head>
 
@@ -10,11 +10,9 @@
 
 <div class="app">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
-
     <div class="logo">
-      <img src="/assets/logo.png" alt="Logo">
+      <img src="/assets/logo.png">
     </div>
 
     <nav class="nav">
@@ -25,10 +23,8 @@
       <a href="#">Finanzen</a>
       <a href="/profile.html">Mein Profil</a>
     </nav>
-
   </aside>
 
-  <!-- MAIN -->
   <div class="main">
 
     <div class="topbar">
@@ -38,27 +34,65 @@
 
     <div class="content">
 
-      <h2>Aktive Karateka</h2>
-
-      <!-- 🔍 Suche (vorbereitet) -->
-      <input id="searchInput" placeholder="Suche..." class="card" style="margin-bottom:15px;">
-
-      <!-- 📋 Liste -->
-      <div id="membersList" class="grid"></div>
-
-      <!-- ➕ Neues Mitglied -->
-      <div id="memberForm" class="card" style="margin-top:20px; display:none;">
-        <h3>Neues Mitglied</h3>
-        <input id="firstName" placeholder="Vorname"><br><br>
-        <input id="lastName" placeholder="Nachname"><br><br>
-        <input id="emailMember" placeholder="Email"><br><br>
-        <button id="saveMember" class="btn">Speichern</button>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2>Mitglieder</h2>
+        <button class="btn" id="openCreateModal">+ Neues Mitglied</button>
       </div>
+
+      <!-- TABELLE -->
+      <table class="member-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="membersTable"></tbody>
+      </table>
 
     </div>
 
   </div>
 
+</div>
+
+<!-- MODAL DETAIL -->
+<div class="modal" id="detailModal">
+  <div class="modal-content">
+
+    <h3>Mitglied bearbeiten</h3>
+
+    <input id="editFirstName">
+    <input id="editLastName">
+    <input id="editEmail">
+
+    <select id="editStatus">
+      <option value="active">Aktiv</option>
+      <option value="inactive">Inaktiv</option>
+      <option value="trial">Probe</option>
+    </select>
+
+    <button class="btn" id="saveEdit">Speichern</button>
+    <button class="btn" id="closeModal">Schließen</button>
+
+  </div>
+</div>
+
+<!-- MODAL CREATE -->
+<div class="modal" id="createModal">
+  <div class="modal-content">
+
+    <h3>Neues Mitglied</h3>
+
+    <input id="newFirstName" placeholder="Vorname">
+    <input id="newLastName" placeholder="Nachname">
+    <input id="newEmail" placeholder="Email">
+
+    <button class="btn" id="createMemberBtn">Erstellen</button>
+    <button class="btn" id="closeCreateModal">Abbrechen</button>
+
+  </div>
 </div>
 
 <script type="module" src="/js/membersPage.js"></script>
