@@ -19,3 +19,19 @@ document.getElementById('logout').addEventListener('click', async () => {
   window.location.href = '/login.html'
 })
 </script>
+<script type="module">
+  import { requireAuth, getUserRole, logout } from "./js/app.js";
+
+  await requireAuth();
+  const role = await getUserRole();
+
+  if (role === 'admin') {
+    document.getElementById("adminLink").style.display = "block";
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+</script>
+
+<!-- Im Body: -->
+<a id="adminLink" href="admin.html" style="display:none;">🔧 Admin-Bereich</a>
+<button id="logoutBtn">Logout</button>
