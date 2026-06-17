@@ -64,10 +64,9 @@ export async function getAllUsers() {
  * ✏️ Rolle eines Users ändern (nur für Admin)
  */
 export async function updateUserRole(userId, newRole) {
-  const { error } = await supabase
-    .from('profiles')
-    .update({ role: newRole })
-    .eq('id', userId);
-
+  const { error } = await supabase.rpc('update_user_role', {
+    target_id: userId,
+    new_role: newRole
+  });
   return !error;
 }
