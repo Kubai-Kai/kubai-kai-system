@@ -105,5 +105,12 @@ document.getElementById("logoutBtn").onclick = async () => {
 
 /**
  * INIT
+ 
+ async function linkFamily(parentId, childId) {
+  await supabase.from("family_links").insert({
+    parent_id: parentId,
+    child_id: childId
+  });
+}
  */
 loadMembers();
