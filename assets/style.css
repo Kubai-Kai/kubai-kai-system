@@ -209,3 +209,17 @@ input:focus {
   flex-direction: column;
   gap: 10px;
 }
+.modal-content.large {
+  width: 500px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.profile-grid p {
+  margin: 2px 0;
+}
