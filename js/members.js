@@ -25,3 +25,21 @@ export async function createMember(member) {
 
   return true;
 }
+export async function getMyMember() {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from("members")
+    .select("*")
+    .eq("profile_id", user.id)
+    .single();
+
+  if (error) {
+    console.error(error);
+    return null;
+  }
+
+  return data;
+}
