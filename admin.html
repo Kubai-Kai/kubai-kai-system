@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin – Benutzerverwaltung</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
+    th { background: #f0f0f0; }
+    select { padding: 5px; }
+    button.save { padding: 5px 12px; cursor: pointer; }
+    #message { margin-top: 10px; color: green; }
+  </style>
+</head>
+<body>
+
+<h1>Benutzerverwaltung</h1>
+<p id="message"></p>
+<button id="logoutBtn">Logout</button>
+
+<table>
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Rolle</th>
+      <th>Registriert am</th>
+      <th>Aktion</th>
+    </tr>
+  </thead>
+  <tbody id="userTable">
+    <tr><td colspan="4">Lade Benutzer...</td></tr>
+  </tbody>
+</table>
+
+<script type="module">
+  import { requireAuth, getUserRole, getAllUsers, updateUserRole, logout } from "./js/app.js";
+
+  // Zugang nur für Admins
+  const user = await requireAuth();
+  const role = await getUserRole();
+  if (role !== 'admin') {
+    alert("Kein Zugriff – nur für Admins.");
+    window.location.href = "dashboard.html";
+  }
+
+  // Logout
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  // Tabelle befüllen
+  const users = await getAllUsers();
+  const tbody = document.getElementById("userTable");
+  tbody.innerHTML = "";
+
+  users.forEach(u => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${u.email}</td>
+      <td>
+        <select data-id="${u.id}">
+          <option value="user"     ${u.role === 'user'      ? 'selected' : ''}>User</option>
+          <option value="moderator"${u.role === 'moderator' ? 'selected' : ''}>Moderator</option>
+          <option value="admin"    ${u.role === 'admin'     ? 'selected' : ''}>Admin</option>
+        </select>
+      </td>
+      <td>${new Date(u.created_at).toLocaleDateString('de-DE')}</td>
+      <td><button class="save" data-id="${u.id}">Speichern</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Rolle speichern
+  tbody.addEventListener("click", async (e) => {
+    if (!e.target.classList.contains("save")) return;
+    const userId = e.target.dataset.id;
+    const select = tbody.querySelector(`select[data-id="${userId}"]`);
+    const newRole = select.value;
+
+    const ok = await updateUserRole(userId, newRole);
+    document.getElementById("message").textContent = ok
+      ? "✅ Rolle erfolgreich gespeichert!"
+      : "❌ Fehler beim Speichern.";
+  });
+</script>
+
+</body>
+</html>
