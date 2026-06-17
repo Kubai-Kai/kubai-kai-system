@@ -43,3 +43,16 @@ export async function getMyMember() {
 
   return data;
 }
+export async function updateMember(id, updates) {
+  const { error } = await supabase
+    .from("members")
+    .update(updates)
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    return false;
+  }
+
+  return true;
+}
