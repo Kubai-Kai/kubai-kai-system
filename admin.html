@@ -34,12 +34,23 @@
 </table>
 
 <script type="module">
-  import { requireAuth, getUserRole, getAllUsers, updateUserRole, logout } from "./js/app.js";
+  import { supabase } from "./js/supabase.js";
+  import { getAllUsers, updateUserRole, logout } from "./js/app.js";
 
-  // Zugang nur für Admins
-  const user = await requireAuth();
-  const role = await getUserRole();
-  if (role !== 'admin') {
+  // Session prüfen
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    window.location.href = "login.html";
+  }
+
+  // Rolle direkt aus profiles laden
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', session.user.id)
+    .single();
+
+  if (!profile || profile.role !== 'admin') {
     alert("Kein Zugriff – nur für Admins.");
     window.location.href = "dashboard.html";
   }
@@ -58,9 +69,9 @@
       <td>${u.email}</td>
       <td>
         <select data-id="${u.id}">
-          <option value="user"     ${u.role === 'user'      ? 'selected' : ''}>User</option>
-          <option value="moderator"${u.role === 'moderator' ? 'selected' : ''}>Moderator</option>
-          <option value="admin"    ${u.role === 'admin'     ? 'selected' : ''}>Admin</option>
+          <option value="user"      ${u.role === 'user'      ? 'selected' : ''}>User</option>
+          <option value="moderator" ${u.role === 'moderator' ? 'selected' : ''}>Moderator</option>
+          <option value="admin"     ${u.role === 'admin'     ? 'selected' : ''}>Admin</option>
         </select>
       </td>
       <td>${new Date(u.created_at).toLocaleDateString('de-DE')}</td>
