@@ -114,3 +114,41 @@ document.getElementById("logoutBtn").onclick = async () => {
 }
  */
 loadMembers();
+function openModal(member) {
+  currentMember = member;
+
+  // HEADER
+  document.getElementById("profileName").textContent =
+    member.first_name + " " + member.last_name;
+
+  // VIEW MODE
+  document.getElementById("viewEmail").textContent = member.email || "-";
+  document.getElementById("viewStatus").textContent = member.status;
+  document.getElementById("viewPhone").textContent = member.phone || "-";
+
+  document.getElementById("viewAddress").textContent =
+    (member.street || "") + " " +
+    (member.zip || "") + " " +
+    (member.city || "");
+
+  document.getElementById("viewCreated").textContent =
+    new Date(member.created_at).toLocaleDateString();
+
+  // EDIT FIELDS vorbereiten
+  document.getElementById("editFirstName").value = member.first_name || "";
+  document.getElementById("editLastName").value = member.last_name || "";
+  document.getElementById("editEmail").value = member.email || "";
+  document.getElementById("editPhone").value = member.phone || "";
+
+  document.getElementById("editStreet").value = member.street || "";
+  document.getElementById("editCity").value = member.city || "";
+  document.getElementById("editZip").value = member.zip || "";
+
+  document.getElementById("editStatus").value = member.status;
+
+  // MODUS setzen
+  document.getElementById("viewMode").style.display = "block";
+  document.getElementById("editMode").style.display = "none";
+
+  document.getElementById("detailModal").style.display = "flex";
+}
