@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Mitglieder - Kubai-Kai System</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      <img src="/assets/logo.png" alt="Logo">
+    </div>
+
+    <nav class="nav">
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/members.html">Mitglieder</a>
+      <a href="#">Training</a>
+      <a href="#">Prüfungen</a>
+      <a href="#">Finanzen</a>
+      <a href="/profile.html">Mein Profil</a>
+    </nav>
+
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="topbar">
+      <div>Mitglieder</div>
+      <button class="logout" id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="content">
+
+      <h2>Aktive Karateka</h2>
+
+      <!-- 🔍 Suche (vorbereitet) -->
+      <input id="searchInput" placeholder="Suche..." class="card" style="margin-bottom:15px;">
+
+      <!-- 📋 Liste -->
+      <div id="membersList" class="grid"></div>
+
+      <!-- ➕ Neues Mitglied -->
+      <div id="memberForm" class="card" style="margin-top:20px; display:none;">
+        <h3>Neues Mitglied</h3>
+        <input id="firstName" placeholder="Vorname"><br><br>
+        <input id="lastName" placeholder="Nachname"><br><br>
+        <input id="emailMember" placeholder="Email"><br><br>
+        <button id="saveMember" class="btn">Speichern</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script type="module" src="/js/membersPage.js"></script>
+
+</body>
+</html>
