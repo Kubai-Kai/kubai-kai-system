@@ -1,11 +1,58 @@
 import { supabase } from "./supabase.js";
 import { getMembers, createMember, updateMember } from "./members.js";
+import { openWizard } from "./adminWizard.js";
+
+let currentUserRole = null;
+let currentUserId = null;
 
 let currentMember = null;
 let allMembers = [];
 
 /**
- * SAFE EVENT BINDER
+ * ROLE LOAD
+ */
+async function loadUserRole() {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return;
+
+  currentUserId = user.id;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (error) {
+    console.error("Role Load Error:", error);
+    return;
+  }
+
+  currentUserRole = data.role;
+
+  console.log("ROLE LOADED:", currentUserRole);
+
+  applyRoleUI(); // 👉 WICHTIG HIER
+}
+
+/**
+ * ROLE UI CONTROL
+ */
+function applyRoleUI() {
+  const btn = document.getElementById("openWizardBtn");
+
+  if (!btn) return;
+
+  if (currentUserRole === "admin") {
+    btn.style.display = "block";
+  } else {
+    btn.style.display = "none";
+  }
+}
+
+/**
+ * EVENT HELPER
  */
 function on(id, event, fn) {
   const el = document.getElementById(id);
@@ -18,19 +65,13 @@ function on(id, event, fn) {
 async function loadMembers() {
   const members = await getMembers();
 
-  console.log("Geladene Mitglieder:", members);
+  allMembers = members || [];
 
-  if (!members) {
-    console.error("Keine Mitglieder geladen!");
-    return;
-  }
-
-  allMembers = members;
   renderMembers(allMembers);
 }
 
 /**
- * RENDER TABLE
+ * RENDER
  */
 function renderMembers(members) {
   const table = document.getElementById("membersTable");
@@ -38,7 +79,7 @@ function renderMembers(members) {
 
   table.innerHTML = "";
 
-  if (!members || members.length === 0) {
+  if (!members.length) {
     table.innerHTML = "<tr><td colspan='3'>Keine Mitglieder gefunden</td></tr>";
     return;
   }
@@ -59,7 +100,7 @@ function renderMembers(members) {
 }
 
 /**
- * STATUS BADGE
+ * STATUS
  */
 function renderStatus(status) {
   if (!status) return "-";
@@ -72,7 +113,7 @@ function renderStatus(status) {
 }
 
 /**
- * OPEN MODAL
+ * MODAL
  */
 function openModal(member) {
   currentMember = member;
@@ -93,7 +134,6 @@ function openModal(member) {
 
   setText("viewCreated", created);
 
-  // EDIT FIELDS
   setVal("editFirstName", member.first_name);
   setVal("editLastName", member.last_name);
   setVal("editEmail", member.email);
@@ -145,16 +185,21 @@ function closeModal(id) {
 /**
  * INIT
  */
-loadMembers();
+async function init() {
+  await loadUserRole();
+  await loadMembers();
+}
+
+init();
 
 /**
- * SEARCH (SMART FILTER)
+ * SEARCH
  */
 on("searchInput", "input", (e) => {
   const value = e.target.value.toLowerCase();
 
   const filtered = allMembers.filter(m => {
-    const searchString = `
+    const s = `
       ${m.first_name || ""}
       ${m.last_name || ""}
       ${m.email || ""}
@@ -163,20 +208,14 @@ on("searchInput", "input", (e) => {
       ${m.phone || ""}
     `.toLowerCase();
 
-    return searchString.includes(value);
+    return s.includes(value);
   });
 
   renderMembers(filtered);
 });
 
 /**
- * CREATE MODAL
- */
-on("openCreateModal", "click", () => showModal("createModal"));
-on("closeCreateModal", "click", () => closeModal("createModal"));
-
-/**
- * CREATE MEMBER
+ * CREATE
  */
 on("createMemberBtn", "click", async () => {
   const ok = await createMember({
@@ -192,24 +231,16 @@ on("createMemberBtn", "click", async () => {
 });
 
 /**
- * DETAIL MODAL
+ * MODALS
  */
 on("closeModal", "click", () => closeModal("detailModal"));
-
-on("editBtn", "click", () => {
-  hide("viewMode");
-  show("editMode");
-});
-
-on("cancelEdit", "click", () => {
-  show("viewMode");
-  hide("editMode");
-});
+on("editBtn", "click", () => { hide("viewMode"); show("editMode"); });
+on("cancelEdit", "click", () => { show("viewMode"); hide("editMode"); });
 
 /**
- * SAVE EDIT
+ * SAVE
  */
-on("saveEdit", "click", async () => {
+on("saveEdit", async () => {
   if (!currentMember) return;
 
   const ok = await updateMember(currentMember.id, {
@@ -238,11 +269,13 @@ on("logoutBtn", "click", async () => {
 });
 
 /**
- * FAMILY (für später)
+ * WIZARD OPEN
  */
-async function linkFamily(parentId, childId) {
-  await supabase.from("family_links").insert({
-    parent_id: parentId,
-    child_id: childId
-  });
-}
+document.getElementById("openWizardBtn")?.addEventListener("click", () => {
+  if (currentUserRole !== "admin") {
+    alert("Kein Zugriff");
+    return;
+  }
+
+  openWizard();
+});
