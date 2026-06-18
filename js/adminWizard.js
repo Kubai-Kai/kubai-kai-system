@@ -1,70 +1,57 @@
 import { supabase } from "./supabase.js";
 import { loadMembers } from "./membersPage.js";
 
-const modal = document.getElementById("adminWizardModal");
+const panel = document.getElementById("adminWizardPanel");
 
-function getVal(id) {
+function get(id) {
   return document.getElementById(id)?.value;
 }
 
 /**
- * OPEN / CLOSE
+ * OPEN
  */
-document.getElementById("closeWizardBtn").onclick = () => {
-  modal.style.display = "none";
-};
+export function openWizard() {
+  panel.classList.add("open");
+}
 
 /**
- * CREATE USER FLOW
+ * CLOSE
+ */
+function closeWizard() {
+  panel.classList.remove("open");
+}
+
+document.getElementById("closeWizardBtn").onclick = closeWizard;
+
+/**
+ * CREATE USER
  */
 document.getElementById("createWizardUserBtn").onclick = async () => {
 
   const payload = {
-    email: getVal("wizEmail"),
-    password: getVal("wizPassword"),
-    first_name: getVal("wizFirstName"),
-    last_name: getVal("wizLastName"),
-    street: getVal("wizStreet"),
-    city: getVal("wizCity"),
-    zip: getVal("wizZip"),
-    phone: getVal("wizPhone"),
-    role: getVal("wizRole")
+    email: get("wizEmail"),
+    password: get("wizPassword"),
+    first_name: get("wizFirstName"),
+    last_name: get("wizLastName"),
+    street: get("wizStreet"),
+    city: get("wizCity"),
+    zip: get("wizZip"),
+    phone: get("wizPhone"),
+    role: get("wizRole")
   };
 
-  // einfache Validierung
-  if (!payload.email || !payload.password) {
-    alert("Email und Passwort erforderlich");
+  const { error } = await supabase.functions.invoke(
+    "create-admin-user",
+    { body: payload }
+  );
+
+  if (error) {
+    alert("Fehler beim Erstellen");
     return;
   }
 
-  try {
-    const { data, error } = await supabase.functions.invoke(
-      "create-admin-user",
-      {
-        body: payload
-      }
-    );
+  alert("User erstellt!");
 
-    if (error) {
-      console.error(error);
-      alert("Fehler beim Erstellen");
-      return;
-    }
-
-    alert("User erfolgreich erstellt!");
-
-    // UI reset
-    modal.style.display = "none";
-
-    document.querySelectorAll("#adminWizardModal input").forEach(i => i.value = "");
-
-    // Mitglieder neu laden
-    if (typeof loadMembers === "function") {
-      loadMembers();
-    }
-
-  } catch (err) {
-    console.error(err);
-    alert("Serverfehler");
-  }
+  panel.classList.remove("open");
+  loadMembers();
 };
