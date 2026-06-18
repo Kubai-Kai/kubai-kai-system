@@ -139,21 +139,22 @@
 </div>
 
 <!-- =========================
-     ADMIN WIZARD (nur Admin sichtbar)
+     ADMIN WIZARD PANEL
 ========================= -->
-<div class="modal" id="adminWizardModal" style="display:none;">
+<div id="adminWizardPanel" class="wizard-panel">
 
-  <div class="modal-content large">
+  <div class="wizard-header">
+    <h2>Neuen User erstellen</h2>
+    <button id="closeWizardBtn">✕</button>
+  </div>
 
-    <h2>Neuen Zugang erstellen</h2>
+  <div class="wizard-body">
 
-    <!-- LOGIN -->
     <input id="wizEmail" placeholder="Email">
     <input id="wizPassword" placeholder="Passwort">
 
     <hr>
 
-    <!-- MEMBER DATA -->
     <input id="wizFirstName" placeholder="Vorname">
     <input id="wizLastName" placeholder="Nachname">
 
@@ -168,15 +169,11 @@
       <option value="admin">Admin</option>
     </select>
 
-    <div style="margin-top:15px; display:flex; gap:10px;">
-      <button class="btn" id="createWizardUserBtn">Erstellen</button>
-      <button class="btn" id="closeWizardBtn">Abbrechen</button>
-    </div>
+    <button class="btn" id="createWizardUserBtn">Erstellen</button>
 
   </div>
 
 </div>
-
 <!-- JS -->
 <script type="module" src="/js/membersPage.js"></script>
 
