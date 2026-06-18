@@ -35,3 +35,6 @@ document.getElementById("createUserBtn").addEventListener("click", async () => {
     console.error(data);
   }
 });
+if (role !== "admin") {
+  document.getElementById("adminWizardModal").style.display = "none";
+}
