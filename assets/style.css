@@ -223,3 +223,28 @@ input:focus {
 .profile-grid p {
   margin: 2px 0;
 }
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background: rgba(0, 200, 100, 0.15);
+  color: #00c864;
+  border: 1px solid #00c864;
+}
+
+.status-inactive {
+  background: rgba(180, 180, 180, 0.15);
+  color: #aaa;
+  border: 1px solid #aaa;
+}
+
+.status-trial {
+  background: rgba(255, 200, 0, 0.15);
+  color: #ffc400;
+  border: 1px solid #ffc400;
+}
