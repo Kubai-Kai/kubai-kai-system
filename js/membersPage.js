@@ -13,51 +13,41 @@ function on(id, event, fn) {
 }
 
 /**
- * LOAD TABLE
+ * LOAD MEMBERS
  */
 async function loadMembers() {
-  allMembers = await getMembers();
-renderMembers(allMembers);
-return;
-  const table = document.getElementById("membersTable");
-  if (!table) return;
+  const members = await getMembers();
 
-  table.innerHTML = "";
+  console.log("Geladene Mitglieder:", members);
 
-  members.forEach(m => {
-    const row = document.createElement("tr");
+  if (!members) {
+    console.error("Keine Mitglieder geladen!");
+    return;
+  }
 
-    row.innerHTML = `
-      <td>${m.first_name} ${m.last_name}</td>
-      <td>${m.email || "-"}</td>
-      <td>${renderStatus(m.status)}</td>
-    `;
-
-    row.addEventListener("click", () => openModal(m));
-
-    table.appendChild(row);
-  });
+  allMembers = members;
+  renderMembers(allMembers);
 }
-function renderStatus(status) {
-  if (!status) return "-";
 
-  return `
-    <span class="status-badge status-${status}">
-      ${status}
-    </span>
-  `;
-}
+/**
+ * RENDER TABLE
+ */
 function renderMembers(members) {
   const table = document.getElementById("membersTable");
   if (!table) return;
 
   table.innerHTML = "";
 
+  if (!members || members.length === 0) {
+    table.innerHTML = "<tr><td colspan='3'>Keine Mitglieder gefunden</td></tr>";
+    return;
+  }
+
   members.forEach(m => {
     const row = document.createElement("tr");
 
     row.innerHTML = `
-      <td>${m.first_name} ${m.last_name}</td>
+      <td>${m.first_name || ""} ${m.last_name || ""}</td>
       <td>${m.email || "-"}</td>
       <td>${renderStatus(m.status)}</td>
     `;
@@ -67,6 +57,10 @@ function renderMembers(members) {
     table.appendChild(row);
   });
 }
+
+/**
+ * STATUS BADGE
+ */
 function renderStatus(status) {
   if (!status) return "-";
 
@@ -76,20 +70,20 @@ function renderStatus(status) {
     </span>
   `;
 }
+
 /**
- * OPEN DETAIL MODAL
+ * OPEN MODAL
  */
 function openModal(member) {
   currentMember = member;
 
-  document.getElementById("profileName").textContent =
-    member.first_name + " " + member.last_name;
-
-  // VIEW
+  setText("profileName", `${member.first_name} ${member.last_name}`);
   setText("viewEmail", member.email);
   setText("viewStatus", member.status);
   setText("viewPhone", member.phone);
-  setText("viewAddress",
+
+  setText(
+    "viewAddress",
     `${member.street || ""} ${member.zip || ""} ${member.city || ""}`
   );
 
@@ -99,7 +93,7 @@ function openModal(member) {
 
   setText("viewCreated", created);
 
-  // EDIT
+  // EDIT FIELDS
   setVal("editFirstName", member.first_name);
   setVal("editLastName", member.last_name);
   setVal("editEmail", member.email);
@@ -109,7 +103,6 @@ function openModal(member) {
   setVal("editZip", member.zip);
   setVal("editStatus", member.status);
 
-  // MODE RESET
   show("viewMode");
   hide("editMode");
 
@@ -155,68 +148,12 @@ function closeModal(id) {
 loadMembers();
 
 /**
- * LOGOUT
+ * SEARCH (SMART FILTER)
  */
-on("logoutBtn", "click", async () => {
-  await supabase.auth.signOut();
-  window.location.href = "/login.html";
-});
-
-/**
- * OPEN CREATE MODAL
- */
-on("openCreateModal", "click", () => {
-  showModal("createModal");
-});
-
-/**
- * CLOSE CREATE MODAL
- */
-on("closeCreateModal", "click", () => {
-  closeModal("createModal");
-});
-
-/**
- * CREATE MEMBER
- */
-on("createMemberBtn", "click", async () => {
-
-  const ok = await createMember({
-    first_name: document.getElementById("newFirstName")?.value,
-    last_name: document.getElementById("newLastName")?.value,
-    email: document.getElementById("newEmail")?.value
-  });
-
-  if (ok) {
-    closeModal("createModal");
-    await loadMembers();
-  }
-});
-
-/**
- * CLOSE DETAIL MODAL
- */
-on("closeModal", "click", () => {
-  closeModal("detailModal");
-});
-
-/**
- * EDIT MODE
- */
-on("editBtn", "click", () => {
-  hide("viewMode");
-  show("editMode");
-});
-
-on("cancelEdit", "click", () => {
-  show("viewMode");
-  hide("editMode");
-});
 on("searchInput", "input", (e) => {
   const value = e.target.value.toLowerCase();
 
   const filtered = allMembers.filter(m => {
-
     const searchString = `
       ${m.first_name || ""}
       ${m.last_name || ""}
@@ -231,11 +168,48 @@ on("searchInput", "input", (e) => {
 
   renderMembers(filtered);
 });
+
+/**
+ * CREATE MODAL
+ */
+on("openCreateModal", "click", () => showModal("createModal"));
+on("closeCreateModal", "click", () => closeModal("createModal"));
+
+/**
+ * CREATE MEMBER
+ */
+on("createMemberBtn", "click", async () => {
+  const ok = await createMember({
+    first_name: document.getElementById("newFirstName")?.value,
+    last_name: document.getElementById("newLastName")?.value,
+    email: document.getElementById("newEmail")?.value
+  });
+
+  if (ok) {
+    closeModal("createModal");
+    await loadMembers();
+  }
+});
+
+/**
+ * DETAIL MODAL
+ */
+on("closeModal", "click", () => closeModal("detailModal"));
+
+on("editBtn", "click", () => {
+  hide("viewMode");
+  show("editMode");
+});
+
+on("cancelEdit", "click", () => {
+  show("viewMode");
+  hide("editMode");
+});
+
 /**
  * SAVE EDIT
  */
 on("saveEdit", "click", async () => {
-
   if (!currentMember) return;
 
   const ok = await updateMember(currentMember.id, {
@@ -256,7 +230,15 @@ on("saveEdit", "click", async () => {
 });
 
 /**
- * FAMILY (STUB – später UI)
+ * LOGOUT
+ */
+on("logoutBtn", "click", async () => {
+  await supabase.auth.signOut();
+  window.location.href = "/login.html";
+});
+
+/**
+ * FAMILY (für später)
  */
 async function linkFamily(parentId, childId) {
   await supabase.from("family_links").insert({
