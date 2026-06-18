@@ -279,3 +279,6 @@ document.getElementById("openWizardBtn")?.addEventListener("click", () => {
 
   openWizard();
 });
+window.addEventListener("members:reload", async () => {
+  await loadMembers();
+});
