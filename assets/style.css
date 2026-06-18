@@ -248,3 +248,44 @@ input:focus {
   color: #ffc400;
   border: 1px solid #ffc400;
 }
+.wizard-panel {
+  position: fixed;
+  right: -420px;
+  top: 0;
+  width: 420px;
+  height: 100vh;
+  background: var(--panel);
+  border-left: 1px solid #1c1f24;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.4);
+  transition: 0.3s ease;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+}
+
+.wizard-panel.open {
+  right: 0;
+}
+
+.wizard-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 1px solid #1c1f24;
+}
+
+.wizard-body {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wizard-body input,
+.wizard-body select {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--panel2);
+  color: var(--text);
+}
