@@ -2,6 +2,7 @@ import { supabase } from "./supabase.js";
 import { getMembers, createMember, updateMember } from "./members.js";
 
 let currentMember = null;
+let allMembers = [];
 
 /**
  * SAFE EVENT BINDER
@@ -15,8 +16,38 @@ function on(id, event, fn) {
  * LOAD TABLE
  */
 async function loadMembers() {
-  const members = await getMembers();
+  allMembers = await getMembers();
+renderMembers(allMembers);
+return;
+  const table = document.getElementById("membersTable");
+  if (!table) return;
 
+  table.innerHTML = "";
+
+  members.forEach(m => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${m.first_name} ${m.last_name}</td>
+      <td>${m.email || "-"}</td>
+      <td>${renderStatus(m.status)}</td>
+    `;
+
+    row.addEventListener("click", () => openModal(m));
+
+    table.appendChild(row);
+  });
+}
+function renderStatus(status) {
+  if (!status) return "-";
+
+  return `
+    <span class="status-badge status-${status}">
+      ${status}
+    </span>
+  `;
+}
+function renderMembers(members) {
   const table = document.getElementById("membersTable");
   if (!table) return;
 
@@ -181,7 +212,25 @@ on("cancelEdit", "click", () => {
   show("viewMode");
   hide("editMode");
 });
+on("searchInput", "input", (e) => {
+  const value = e.target.value.toLowerCase();
 
+  const filtered = allMembers.filter(m => {
+
+    const searchString = `
+      ${m.first_name || ""}
+      ${m.last_name || ""}
+      ${m.email || ""}
+      ${m.city || ""}
+      ${m.street || ""}
+      ${m.phone || ""}
+    `.toLowerCase();
+
+    return searchString.includes(value);
+  });
+
+  renderMembers(filtered);
+});
 /**
  * SAVE EDIT
  */
