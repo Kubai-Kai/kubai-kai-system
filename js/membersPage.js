@@ -28,7 +28,7 @@ async function loadMembers() {
     row.innerHTML = `
       <td>${m.first_name} ${m.last_name}</td>
       <td>${m.email || "-"}</td>
-      <td>${m.status}</td>
+      <td>${renderStatus(m.status)}</td>
     `;
 
     row.addEventListener("click", () => openModal(m));
@@ -36,7 +36,15 @@ async function loadMembers() {
     table.appendChild(row);
   });
 }
+function renderStatus(status) {
+  if (!status) return "-";
 
+  return `
+    <span class="status-badge status-${status}">
+      ${status}
+    </span>
+  `;
+}
 /**
  * OPEN DETAIL MODAL
  */
