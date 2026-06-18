@@ -3,46 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="/assets/style.css">
+  <title>Mitglieder</title>
 </head>
 
 <body>
 
 <div class="app">
 
+  <!-- SIDEBAR -->
   <aside class="sidebar">
+
     <div class="logo">
       <img src="/assets/logo.png">
     </div>
 
     <nav class="nav">
-  <a href="/dashboard.html">Dashboard</a>
-  <a href="/members.html">Mitglieder</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/members.html">Mitglieder</a>
       <a href="#">Training</a>
       <a href="#">Prüfungen</a>
       <a href="#">Finanzen</a>
       <a href="/profile.html">Mein Profil</a>
     </nav>
+
   </aside>
 
+  <!-- MAIN -->
   <div class="main">
 
+    <!-- TOPBAR -->
     <div class="topbar">
       <div>Mitglieder</div>
       <button class="logout" id="logoutBtn">Logout</button>
     </div>
 
+    <!-- CONTENT -->
     <div class="content">
 
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2>Mitglieder</h2>
-        <button class="btn" id="openCreateModal">+ Neues Mitglied</button>
-      </div>
-<input 
-  id="searchInput" 
-  placeholder="Suche nach Name, Ort, Email..." 
-  style="margin-bottom:15px; padding:10px; width:100%; border-radius:8px;"
->
-      <!-- TABELLE -->
+      <!-- SEARCH -->
+      <input 
+        id="searchInput" 
+        placeholder="Suche nach Name, Ort, Email..."
+        style="margin-bottom:15px; padding:10px; width:100%; border-radius:8px;"
+      >
+
+      <!-- TABLE -->
       <table class="member-table">
         <thead>
           <tr>
@@ -51,25 +56,27 @@
             <th>Status</th>
           </tr>
         </thead>
+
         <tbody id="membersTable"></tbody>
       </table>
 
     </div>
-
   </div>
-
 </div>
 
+<!-- =========================
+     DETAIL MODAL
+========================= -->
 <div class="modal" id="detailModal">
+
   <div class="modal-content large">
 
-    <!-- HEADER -->
     <div style="display:flex; justify-content:space-between;">
       <h2 id="profileName">Mitglied</h2>
       <button id="closeModal">X</button>
     </div>
 
-    <!-- VIEW MODE -->
+    <!-- VIEW -->
     <div id="viewMode">
 
       <div class="profile-grid">
@@ -105,17 +112,17 @@
 
     </div>
 
-    <!-- EDIT MODE -->
+    <!-- EDIT -->
     <div id="editMode" style="display:none;">
 
       <input id="editFirstName">
       <input id="editLastName">
       <input id="editEmail">
-      <input id="editPhone" placeholder="Telefon">
+      <input id="editPhone">
 
-      <input id="editStreet" placeholder="Straße">
-      <input id="editCity" placeholder="Stadt">
-      <input id="editZip" placeholder="PLZ">
+      <input id="editStreet">
+      <input id="editCity">
+      <input id="editZip">
 
       <select id="editStatus">
         <option value="active">Aktiv</option>
@@ -130,51 +137,48 @@
 
   </div>
 </div>
-  
-<!-- MODAL CREATE -->
-<div class="modal" id="createModal">
-  <div class="modal-content">
 
-    <h3>Neues Mitglied</h3>
+<!-- =========================
+     ADMIN WIZARD (nur Admin sichtbar)
+========================= -->
+<div class="modal" id="adminWizardModal" style="display:none;">
 
-    <input id="newFirstName" placeholder="Vorname">
-    <input id="newLastName" placeholder="Nachname">
-    <input id="newEmail" placeholder="Email">
+  <div class="modal-content large">
 
-    <button class="btn" id="createMemberBtn">Erstellen</button>
-    <button class="btn" id="closeCreateModal">Abbrechen</button>
+    <h2>Neuen Zugang erstellen</h2>
+
+    <!-- LOGIN -->
+    <input id="wizEmail" placeholder="Email">
+    <input id="wizPassword" placeholder="Passwort">
+
+    <hr>
+
+    <!-- MEMBER DATA -->
+    <input id="wizFirstName" placeholder="Vorname">
+    <input id="wizLastName" placeholder="Nachname">
+
+    <input id="wizStreet" placeholder="Straße">
+    <input id="wizCity" placeholder="Stadt">
+    <input id="wizZip" placeholder="PLZ">
+    <input id="wizPhone" placeholder="Telefon">
+
+    <select id="wizRole">
+      <option value="user">Mitglied</option>
+      <option value="trainer">Trainer</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <div style="margin-top:15px; display:flex; gap:10px;">
+      <button class="btn" id="createWizardUserBtn">Erstellen</button>
+      <button class="btn" id="closeWizardBtn">Abbrechen</button>
+    </div>
 
   </div>
-</div>
-<div class="wizard">
-
-  <h2>Neuen User erstellen</h2>
-
-  <input id="email" placeholder="Email">
-  <input id="password" placeholder="Passwort">
-
-  <hr>
-
-  <input id="first_name" placeholder="Vorname">
-  <input id="last_name" placeholder="Nachname">
-
-  <input id="street" placeholder="Straße">
-  <input id="city" placeholder="Stadt">
-  <input id="zip" placeholder="PLZ">
-  <input id="phone" placeholder="Telefon">
-
-  <select id="role">
-    <option value="user">Mitglied</option>
-    <option value="trainer">Trainer</option>
-    <option value="admin">Admin</option>
-  </select>
-
-  <button id="createUserBtn">User erstellen</button>
 
 </div>
-  
+
+<!-- JS -->
 <script type="module" src="/js/membersPage.js"></script>
-  <script src="/js/adminWizard.js"></script>
-  
+
 </body>
 </html>
